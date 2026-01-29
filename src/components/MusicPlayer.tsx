@@ -18,8 +18,6 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
     },
   ];
 
-  const [currentTrack, setCurrentTrack] = useState(0);
-
   // Initialize audio src on mount
   useEffect(() => {
     if (audioRef.current) {
@@ -75,7 +73,7 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed top-24 right-6 z-[99] bg-base-200 border border-base-300 rounded-2xl p-4 w-64 shadow-2xl"
+            className="fixed top-24 right-6 z-99 bg-base-200 border border-base-300 rounded-2xl p-4 w-64 shadow-2xl"
           >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">

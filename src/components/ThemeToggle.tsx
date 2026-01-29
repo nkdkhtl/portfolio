@@ -54,7 +54,7 @@ export function ThemeToggle() {
                 className={`flex items-center gap-3 ${theme === t ? "active" : ""}`}
               >
                 <div
-                  className="relative h-10 w-16 rounded-md overflow-hidden flex-shrink-0"
+                  className="relative h-10 w-16 rounded-md overflow-hidden shrink-0"
                   data-theme={t}
                 >
                   <div className="absolute inset-0 grid grid-cols-4 gap-px p-1">
@@ -67,7 +67,7 @@ export function ThemeToggle() {
                 <span className="flex-1">
                   {t.charAt(0).toUpperCase() + t.slice(1)}
                 </span>
-                {theme === t && <Check className="size-4 flex-shrink-0" />}
+                {theme === t && <Check className="size-4 shrink-0" />}
               </a>
             </li>
           ))}

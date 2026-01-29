@@ -189,7 +189,7 @@ export function Terminal() {
   }, [lines]);
   return (
     <div
-      className="bg-base-200 backdrop-blur-sm rounded-2xl border border-base-300 p-6 shadow-2xl h-[500px] flex flex-col font-mono"
+      className="bg-base-200 backdrop-blur-sm rounded-2xl border border-base-300 p-6 shadow-2xl h-125 flex flex-col font-mono"
       onClick={() => inputRef.current?.focus()}
     >
       <div className="flex items-center gap-2 mb-4 pb-3 border-b border-base-300">
