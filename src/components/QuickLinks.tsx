@@ -1,12 +1,4 @@
-import {
-  Facebook,
-  FileText,
-  Github,
-  Instagram,
-  Linkedin,
-  Mail,
-  Twitter,
-} from "lucide-react";
+import { Facebook, FileText, Github, Instagram, Linkedin } from "lucide-react";
 
 export function QuickLinks() {
   const links = [
