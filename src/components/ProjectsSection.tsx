@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { fetchGitHubProjects, type Project } from "../services";
 
 export const ProjectsSection = () => {
-  const [hoveredId, setHoveredId] = useState<number | null>(null);
+  // Removed unused hoveredId state
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -74,8 +74,7 @@ export const ProjectsSection = () => {
             {projects.map((project) => (
               <div
                 key={project.id}
-                onMouseEnter={() => setHoveredId(project.id)}
-                onMouseLeave={() => setHoveredId(null)}
+                // Removed hoveredId-related logic
                 className="group relative h-80 rounded-xl overflow-hidden cursor-pointer"
               >
                 {/* Background */}
