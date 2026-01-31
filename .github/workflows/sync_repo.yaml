@@ -1,36 +1,39 @@
-name: Sync Metadata to GitHub
+name: Auto update repo metadata
 
 on:
   push:
-    branches:
-      - main # Hoặc 'master' nếu bạn dùng tên cũ
-    paths:
-      - "package.json" # Chỉ chạy khi có thay đổi ở file package.json
-
-# Cấp quyền cho GitHub Token để có thể ghi dữ liệu vào Repository
-permissions:
-  contents: write
+    branches: [main]
 
 jobs:
-  sync-metadata:
+  update-about:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/github-script@v7
         with:
-          node-version: 20
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const languages = await github.rest.repos.listLanguages({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
 
-      - name: Sync package.json with repo info
-        uses: Jaid/action-sync-node-meta@v2.0.0
-        with:
-          # Bật các thuộc tính cần đồng bộ
-          syncDescription: true
-          syncKeywords: true
-          syncHomepage: true
-          # Hướng đồng bộ: từ file package.json lên GitHub
-          direction: node-to-github
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            const langs = Object.keys(languages.data);
+            if (langs.length === 0) return;
+
+            const mainLang = langs[0];
+
+            const topicsMap = {
+              JavaScript: ['javascript', 'frontend', 'web'],
+              TypeScript: ['typescript', 'frontend'],
+              Java: ['java', 'backend'],
+              Python: ['python', 'automation']
+            };
+
+            const topics = topicsMap[mainLang] || [mainLang.toLowerCase()];
+
+            await github.rest.repos.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              description: `Project written mainly in ${mainLang}`,
+              topics: topics
+            });
