@@ -6,8 +6,6 @@ on:
 
 permissions:
   contents: write
-  metadata: write
-
 jobs:
   update-about:
     runs-on: ubuntu-latest
