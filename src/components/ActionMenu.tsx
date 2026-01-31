@@ -53,10 +53,10 @@ export function ActionMenu({
   return (
     <div
       ref={menuRef}
-      className="fixed top-6 right-6 z-100 pointer-events-auto flex items-center gap-3"
+      className="fixed top-4 right-4 z-100 pointer-events-auto flex items-center gap-2"
     >
       <motion.div
-        className="flex gap-2"
+        className="flex gap-1.5"
         initial={false}
         animate={{
           opacity: isOpen ? 1 : 0,
@@ -77,7 +77,7 @@ export function ActionMenu({
               onClick={() => {
                 btn.onClick();
               }}
-              className={`btn btn-circle btn-ghost relative ${
+              className={`btn btn-circle btn-sm btn-ghost relative ${
                 btn.isActive ? btn.color : "text-base-content/40 opacity-50"
               } hover:bg-base-200 transition-all`}
               title={btn.label}
@@ -85,10 +85,10 @@ export function ActionMenu({
                 scale: btn.isActive ? 1 : 0.9,
               }}
             >
-              <btn.icon className="size-5" />
+              <btn.icon className="size-4" />
               {!btn.isActive && (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="absolute w-6 h-0.5 bg-current rotate-45"></div>
+                  <div className="absolute w-5 h-0.5 bg-current rotate-45"></div>
                 </div>
               )}
             </motion.button>
@@ -99,10 +99,10 @@ export function ActionMenu({
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
         animate={{ rotate: isOpen ? 45 : 0 }}
-        className="btn btn-circle btn-ghost"
+        className="btn btn-circle btn-sm btn-ghost"
         title="Menu"
       >
-        <Settings className="w-6 h-6 flex items-center justify-center" />
+        <Settings className="w-5 h-5 flex items-center justify-center" />
       </motion.button>
 
       <ThemeToggle />
