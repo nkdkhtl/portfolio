@@ -1,5 +1,6 @@
 {
   "name": "portfolio",
+  "description": "Đây là portfolio của Nam Khúc",
   "private": true,
   "version": "0.0.0",
   "type": "module",
