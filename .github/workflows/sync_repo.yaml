@@ -13,3 +13,6 @@ jobs:
         with:
           direction: overwrite-github
           githubToken: ${{ secrets.GITHUB_TOKEN }}
+          syncDescription: true
+          syncHomepage: true
+          syncTopics: true
