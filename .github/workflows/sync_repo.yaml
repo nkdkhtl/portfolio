@@ -1,18 +1,36 @@
-name: Sync repository info with package.json
+name: Sync Metadata to GitHub
+
 on:
   push:
-    branches: [main]
+    branches:
+      - main # Hoặc 'master' nếu bạn dùng tên cũ
+    paths:
+      - "package.json" # Chỉ chạy khi có thay đổi ở file package.json
+
+# Cấp quyền cho GitHub Token để có thể ghi dữ liệu vào Repository
+permissions:
+  contents: write
+
 jobs:
-  build:
+  sync-metadata:
     runs-on: ubuntu-latest
     steps:
-      - name: actions/checkout
-        uses: actions/checkout@v2.3.4
-      - name: Jaid/action-sync-node-meta
-        uses: jaid/action-sync-node-meta@v2.0.0
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          direction: overwrite-github
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-          syncDescription: "true"
-          syncHomepage: "true"
-          syncKeywords: "true"
+          node-version: 20
+
+      - name: Sync package.json with repo info
+        uses: Jaid/action-sync-node-meta@v2.0.0
+        with:
+          # Bật các thuộc tính cần đồng bộ
+          syncDescription: true
+          syncKeywords: true
+          syncHomepage: true
+          # Hướng đồng bộ: từ file package.json lên GitHub
+          direction: node-to-github
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
