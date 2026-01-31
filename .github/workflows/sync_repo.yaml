@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: write
+  metadata: write
+
 jobs:
   update-about:
     runs-on: ubuntu-latest
@@ -20,20 +24,11 @@ jobs:
             const langs = Object.keys(languages.data);
             if (langs.length === 0) return;
 
-            const mainLang = langs[0];
-
-            const topicsMap = {
-              JavaScript: ['javascript', 'frontend', 'web'],
-              TypeScript: ['typescript', 'frontend'],
-              Java: ['java', 'backend'],
-              Python: ['python', 'automation']
-            };
-
-            const topics = topicsMap[mainLang] || [mainLang.toLowerCase()];
+            const topics = langs.map(lang => lang.toLowerCase());
 
             await github.rest.repos.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              description: `Project written mainly in ${mainLang}`,
+              description: `This is a portfolio repository showcasing various projects and skills.`,
               topics: topics
             });
