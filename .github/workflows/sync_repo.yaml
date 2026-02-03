@@ -11,78 +11,114 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Detect language, framework and libraries
+      - name: Detect language, framework, libraries and monorepo
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.CREATE_TOPIC_TOKEN }}
           script: |
             const fs = require('fs');
+            const path = require('path');
             const { owner, repo } = context.repo;
 
-            let topics = ['feature-project'];
+            let topics = ['featured-project'];
             let description = 'Software project';
 
             // ===============================
-            // 1. READ package.json (if exists)
+            // 1. MONOREPO DETECTION
+            // ===============================
+            let isMonorepo = false;
+
+            const monorepoMarkers = [
+              'pnpm-workspace.yaml',
+              'turbo.json',
+              'nx.json',
+              'lerna.json',
+              'apps',
+              'packages'
+            ];
+
+            for (const marker of monorepoMarkers) {
+              if (fs.existsSync(marker)) {
+                isMonorepo = true;
+                break;
+              }
+            }
+
+            // Multiple package.json
+            const pkgFiles = [];
+            function findPackageJson(dir, depth = 0) {
+              if (depth > 3) return;
+              for (const file of fs.readdirSync(dir)) {
+                const full = path.join(dir, file);
+                if (fs.statSync(full).isDirectory()) {
+                  findPackageJson(full, depth + 1);
+                } else if (file === 'package.json') {
+                  pkgFiles.push(full);
+                }
+              }
+            }
+
+            findPackageJson('.');
+            if (pkgFiles.length > 1) isMonorepo = true;
+
+            if (isMonorepo) topics.push('monorepo');
+
+            // ===============================
+            // 2. DEPENDENCY COLLECTION
             // ===============================
             let deps = {};
-            if (fs.existsSync('package.json')) {
-              const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-              deps = {
-                ...pkg.dependencies,
-                ...pkg.devDependencies
-              };
+
+            for (const pkgPath of pkgFiles) {
+              try {
+                const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+                Object.assign(deps, pkg.dependencies, pkg.devDependencies);
+              } catch {}
             }
 
             // ===============================
-            // 2. FRAMEWORK DETECTION
+            // 3. FRAMEWORK DETECTION
             // ===============================
             if (fs.existsSync('next.config.js') || fs.existsSync('next.config.mjs')) {
               topics.push('nextjs', 'react', 'frontend');
-              description = 'Next.js frontend application';
+              description = isMonorepo
+                ? 'Monorepo with Next.js frontend'
+                : 'Next.js frontend application';
             }
-            else if (
+
+            if (
               fs.existsSync('vite.config.js') ||
               fs.existsSync('vite.config.ts')
             ) {
               topics.push('vite', 'frontend');
 
-              if (deps.react) {
-                topics.push('react');
-                description = 'Vite + React frontend project';
-              } else if (deps.vue) {
-                topics.push('vue');
-                description = 'Vite + Vue frontend project';
-              } else {
-                description = 'Vite frontend project';
-              }
-            }
-            else if (deps.react) {
-              topics.push('react', 'frontend');
-              description = 'React frontend application';
-            }
-            else if (deps.vue) {
-              topics.push('vue', 'frontend');
-              description = 'Vue frontend application';
+              if (deps.react) topics.push('react');
+              if (deps.vue) topics.push('vue');
+
+              description = isMonorepo
+                ? 'Monorepo with Vite frontend'
+                : 'Vite frontend project';
             }
 
             // ===============================
-            // 3. BACKEND DETECTION
+            // 4. BACKEND DETECTION
             // ===============================
-            if (deps.express) topics.push('express');
-            if (deps.nestjs) topics.push('nestjs');
-            if (deps.fastify) topics.push('fastify');
-
             if (deps.express || deps.nestjs || deps.fastify) {
               topics.push('nodejs', 'backend');
-              description = 'Node.js backend application';
+
+              if (deps.express) topics.push('express');
+              if (deps.nestjs) topics.push('nestjs');
+              if (deps.fastify) topics.push('fastify');
+
+              description = isMonorepo
+                ? 'Fullstack monorepo (frontend + backend)'
+                : 'Node.js backend application';
             }
 
             // ===============================
-            // 4. LIBRARY / TOOL DETECTION
+            // 5. LIBRARY / TOOL DETECTION
             // ===============================
             if (deps.tailwindcss) topics.push('tailwindcss');
             if (deps.prisma) topics.push('prisma');
@@ -91,7 +127,7 @@ jobs:
             if (deps.axios) topics.push('axios');
 
             // ===============================
-            // 5. LANGUAGE DETECTION (GitHub)
+            // 6. LANGUAGE DETECTION (GitHub)
             // ===============================
             const languages = await github.rest.repos.listLanguages({
               owner,
@@ -101,12 +137,11 @@ jobs:
             const mainLang = Object.keys(languages.data)[0];
             if (mainLang) topics.push(mainLang.toLowerCase());
 
-            // Remove duplicates
+            // ===============================
+            // 7. FINALIZE
+            // ===============================
             topics = [...new Set(topics)];
 
-            // ===============================
-            // 6. UPDATE REPO METADATA
-            // ===============================
             await github.rest.repos.update({
               owner,
               repo,
@@ -119,5 +154,6 @@ jobs:
               names: topics
             });
 
-            console.log('Updated description:', description);
-            console.log('Updated topics:', topics);
+            console.log('Monorepo:', isMonorepo);
+            console.log('Description:', description);
+            console.log('Topics:', topics);
