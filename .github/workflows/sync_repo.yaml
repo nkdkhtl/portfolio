@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.CREATE_TOKEN_TOKEN }}
+          github-token: ${{ secrets.CREATE_TOPIC_TOKEN }}
           script: |
             const { owner, repo } = context.repo;
 
