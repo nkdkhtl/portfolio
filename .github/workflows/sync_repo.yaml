@@ -1,33 +1,47 @@
-name: Auto update repo metadata
+name: Sync repo metadata
 
 on:
   push:
-    branches: [main]
-
-permissions:
-  contents: write
+    branches:
+      - main
 
 jobs:
-  update-about:
+  sync:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.CREATE_TOKEN_TOKEN }}
           script: |
+            const { owner, repo } = context.repo;
+
             const languages = await github.rest.repos.listLanguages({
-              owner: context.repo.owner,
-              repo: context.repo.repo
+              owner,
+              repo
             });
 
             const langs = Object.keys(languages.data);
             if (langs.length === 0) return;
 
-            const topics = langs.map(lang => lang.toLowerCase());
+            const mainLang = langs[0];
 
+            const topicsMap = {
+              JavaScript: ['javascript', 'web', 'frontend'],
+              TypeScript: ['typescript', 'web'],
+              Java: ['java', 'backend'],
+              Python: ['python', 'automation']
+            };
+
+            const topics = topicsMap[mainLang] || [mainLang.toLowerCase()];
+            topics.push("featured-project");
             await github.rest.repos.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              description: `This is a portfolio repository showcasing various projects and skills.`,
-              topics: topics
+              owner,
+              repo,
+              description: `This project is mainly written in ${mainLang}`
+            });
+
+            await github.rest.repos.replaceAllTopics({
+              owner,
+              repo,
+              names: topics
             });
