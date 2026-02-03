@@ -2,8 +2,87 @@ import { Github, ExternalLink, Star, Loader } from "lucide-react";
 import { useState, useEffect } from "react";
 import { fetchGitHubProjects, type Project } from "../services";
 
+const ProjectCard = ({ project }: { project: Project }) => (
+  <div className="group relative h-80 rounded-xl overflow-hidden cursor-pointer">
+    {/* Background */}
+    <div className="absolute inset-0 bg-gradient-to-br from-base-200 to-base-300 group-hover:from-primary/10 group-hover:to-accent/10 transition-all duration-300"></div>
+
+    {/* Border */}
+    <div className="absolute inset-0 border border-base-300 group-hover:border-primary/50 rounded-xl transition-all duration-300 pointer-events-none"></div>
+
+    {/* Content */}
+    <div className="relative h-full p-6 flex flex-col justify-between z-10">
+      <div>
+        <div className="text-5xl mb-3">{project.image}</div>
+        <h4 className="text-lg md:text-xl font-bold text-base-content mb-2">
+          {project.title}
+        </h4>
+        <p className="text-sm text-base-content/70 line-clamp-2">
+          {project.description}
+        </p>
+      </div>
+
+      <div>
+        {/* Tags - Filter out featured-project tag */}
+        <div className="flex flex-wrap gap-1 mb-4">
+          {project.tags
+            .filter((tag) => tag !== "featured-project")
+            .slice(0, 4)
+            .map((tag, idx) => (
+              <span
+                key={idx}
+                className="px-2 py-1 text-xs rounded-full bg-base-300 text-base-content group-hover:bg-primary/20 group-hover:text-primary transition-colors"
+              >
+                {tag}
+              </span>
+            ))}
+          {project.tags.filter((tag) => tag !== "featured-project").length >
+            4 && (
+            <span className="px-2 py-1 text-xs rounded-full bg-base-300 text-base-content">
+              +
+              {project.tags.filter((tag) => tag !== "featured-project").length -
+                4}
+            </span>
+          )}
+        </div>
+
+        {/* Stats & Links */}
+        <div className="flex items-center justify-between gap-2">
+          {project.stats && (
+            <div className="flex items-center gap-1 text-xs text-base-content/60">
+              <Star className="size-3" />
+              {project.stats.stars}
+            </div>
+          )}
+          <div className="flex gap-1">
+            {project.github && (
+              <a
+                href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1.5 rounded-lg bg-primary/20 hover:bg-primary/40 text-primary transition-colors"
+              >
+                <Github className="size-4" />
+              </a>
+            )}
+            {project.live && (
+              <a
+                href={project.live}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1.5 rounded-lg bg-accent/20 hover:bg-accent/40 text-accent transition-colors"
+              >
+                <ExternalLink className="size-4" />
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 export const ProjectsSection = () => {
-  // Removed unused hoveredId state
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,6 +107,14 @@ export const ProjectsSection = () => {
 
     loadProjects();
   }, []);
+
+  // Filter projects into featured and others
+  const featuredProjects = projects.filter((project) =>
+    project.tags.includes("featured-project"),
+  );
+  const otherProjects = projects.filter(
+    (project) => !project.tags.includes("featured-project"),
+  );
 
   return (
     <div className="w-full py-20 px-4 md:px-8">
@@ -69,86 +156,39 @@ export const ProjectsSection = () => {
       {/* Content */}
       {!loading && projects.length > 0 && (
         <div className="max-w-7xl mx-auto">
-          {/* Projects Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects.slice(0, 6).map((project) => (
-              <div
-                key={project.id}
-                // Removed hoveredId-related logic
-                className="group relative h-80 rounded-xl overflow-hidden cursor-pointer"
-              >
-                {/* Background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-base-200 to-base-300 group-hover:from-primary/10 group-hover:to-accent/10 transition-all duration-300"></div>
-
-                {/* Border */}
-                <div className="absolute inset-0 border border-base-300 group-hover:border-primary/50 rounded-xl transition-all duration-300 pointer-events-none"></div>
-
-                {/* Content */}
-                <div className="relative h-full p-6 flex flex-col justify-between z-10">
-                  <div>
-                    <div className="text-5xl mb-3">{project.image}</div>
-                    <h4 className="text-lg md:text-xl font-bold text-base-content mb-2">
-                      {project.title}
-                    </h4>
-                    <p className="text-sm text-base-content/70 line-clamp-2">
-                      {project.description}
-                    </p>
-                  </div>
-
-                  <div>
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-1 mb-4">
-                      {project.tags.slice(0, 4).map((tag, idx) => (
-                        <span
-                          key={idx}
-                          className="px-2 py-1 text-xs rounded-full bg-base-300 text-base-content group-hover:bg-primary/20 group-hover:text-primary transition-colors"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                      {project.tags.length > 4 && (
-                        <span className="px-2 py-1 text-xs rounded-full bg-base-300 text-base-content">
-                          +{project.tags.length - 4}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Stats & Links */}
-                    <div className="flex items-center justify-between gap-2">
-                      {project.stats && (
-                        <div className="flex items-center gap-1 text-xs text-base-content/60">
-                          <Star className="size-3" />
-                          {project.stats.stars}
-                        </div>
-                      )}
-                      <div className="flex gap-1">
-                        {project.github && (
-                          <a
-                            href={project.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-1.5 rounded-lg bg-primary/20 hover:bg-primary/40 text-primary transition-colors"
-                          >
-                            <Github className="size-4" />
-                          </a>
-                        )}
-                        {project.live && (
-                          <a
-                            href={project.live}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-1.5 rounded-lg bg-accent/20 hover:bg-accent/40 text-accent transition-colors"
-                          >
-                            <ExternalLink className="size-4" />
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          {/* Featured Projects Section */}
+          {featuredProjects.length > 0 && (
+            <div className="mb-20">
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-6 h-1 bg-accent rounded-full"></div>
+                <h3 className="text-2xl font-bold text-base-content">
+                  Featured Projects
+                </h3>
               </div>
-            ))}
-          </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featuredProjects.map((project) => (
+                  <ProjectCard key={project.id} project={project} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* All Projects Section */}
+          {otherProjects.length > 0 && (
+            <div>
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-6 h-1 bg-base-300 rounded-full"></div>
+                <h3 className="text-2xl font-bold text-base-content">
+                  Other Projects
+                </h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {otherProjects.slice(0, 6).map((project) => (
+                  <ProjectCard key={project.id} project={project} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 

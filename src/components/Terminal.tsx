@@ -40,6 +40,8 @@ export function Terminal() {
       "3rd-year IT Student at ",
       "the University of Transport and Communications.",
       "",
+      "Vice Head of the Web Division at SFIT Computer Club.",
+      "",
       "Passionate about modern web technologies, ",
       "design systems, and user-centered development.",
       "",

@@ -24,7 +24,6 @@ jobs:
             const { owner, repo } = context.repo;
 
             let topics = ['featured-project'];
-            let description = 'Software project';
 
             // ===============================
             // 1. MONOREPO DETECTION
@@ -83,9 +82,6 @@ jobs:
             // ===============================
             if (fs.existsSync('next.config.js') || fs.existsSync('next.config.mjs')) {
               topics.push('nextjs', 'react', 'frontend');
-              description = isMonorepo
-                ? 'Monorepo with Next.js frontend'
-                : 'Next.js frontend application';
             }
 
             if (
@@ -97,9 +93,7 @@ jobs:
               if (deps.react) topics.push('react');
               if (deps.vue) topics.push('vue');
 
-              description = isMonorepo
-                ? 'Monorepo with Vite frontend'
-                : 'Vite frontend project';
+              
             }
 
             // ===============================
@@ -112,9 +106,7 @@ jobs:
               if (deps.nestjs) topics.push('nestjs');
               if (deps.fastify) topics.push('fastify');
 
-              description = isMonorepo
-                ? 'Fullstack monorepo (frontend + backend)'
-                : 'Node.js backend application';
+              
             }
 
             // ===============================
@@ -145,7 +137,6 @@ jobs:
             await github.rest.repos.update({
               owner,
               repo,
-              description
             });
 
             await github.rest.repos.replaceAllTopics({
@@ -155,5 +146,4 @@ jobs:
             });
 
             console.log('Monorepo:', isMonorepo);
-            console.log('Description:', description);
             console.log('Topics:', topics);
