@@ -6,7 +6,6 @@ on:
 
 permissions:
   contents: write
-  metadata: write
 
 jobs:
   update-about:
@@ -14,7 +13,7 @@ jobs:
     steps:
       - uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.PORTFOLIO_GITHUB_TOKEN }}
+          github-token: ${{ secrets.CREATE_TOKEN_TOKEN }}
           script: |
             const languages = await github.rest.repos.listLanguages({
               owner: context.repo.owner,

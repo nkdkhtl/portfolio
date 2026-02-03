@@ -71,7 +71,7 @@ export const ProjectsSection = () => {
         <div className="max-w-7xl mx-auto">
           {/* Projects Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects.map((project) => (
+            {projects.slice(0, 6).map((project) => (
               <div
                 key={project.id}
                 // Removed hoveredId-related logic
@@ -163,9 +163,14 @@ export const ProjectsSection = () => {
 
       {/* CTA Button */}
       <div className="max-w-7xl mx-auto mt-16 text-center">
-        <button className="px-8 py-3 rounded-lg bg-gradient-to-r from-primary to-accent text-white font-semibold hover:shadow-lg hover:shadow-primary/50 transition-all duration-300 transform hover:scale-105">
+        <a
+          href="https://github.com/nkdkhtl?tab=repositories"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block px-8 py-3 rounded-lg bg-gradient-to-r from-primary to-accent text-white font-semibold hover:shadow-lg hover:shadow-primary/50 transition-all duration-300 transform hover:scale-105"
+        >
           View All Projects on GitHub
-        </button>
+        </a>
       </div>
     </div>
   );
