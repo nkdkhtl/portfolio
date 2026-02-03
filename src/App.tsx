@@ -1,5 +1,6 @@
 import { Rocket } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Analytics } from "@vercel/analytics/react";
 import namkhuc from "./assets/0c4b6f786fdce50db18a9523b7ccf920.jpg";
 import { Terminal } from "./components/Terminal";
 import { QuickLinks } from "./components/QuickLinks";
@@ -119,6 +120,7 @@ function App() {
       <div id="contact" className="flex flex-wrap min-h-screen w-full"></div>
 
       <Footer />
+      <Analytics />
     </div>
   );
 }
