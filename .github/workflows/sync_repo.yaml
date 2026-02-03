@@ -1,43 +1,116 @@
-name: Sync repo metadata
+name: Auto sync repo metadata
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   sync:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/github-script@v7
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Detect language, framework and libraries
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.CREATE_TOPIC_TOKEN }}
           script: |
+            const fs = require('fs');
             const { owner, repo } = context.repo;
 
+            let topics = ['feature-project'];
+            let description = 'Software project';
+
+            // ===============================
+            // 1. READ package.json (if exists)
+            // ===============================
+            let deps = {};
+            if (fs.existsSync('package.json')) {
+              const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+              deps = {
+                ...pkg.dependencies,
+                ...pkg.devDependencies
+              };
+            }
+
+            // ===============================
+            // 2. FRAMEWORK DETECTION
+            // ===============================
+            if (fs.existsSync('next.config.js') || fs.existsSync('next.config.mjs')) {
+              topics.push('nextjs', 'react', 'frontend');
+              description = 'Next.js frontend application';
+            }
+            else if (
+              fs.existsSync('vite.config.js') ||
+              fs.existsSync('vite.config.ts')
+            ) {
+              topics.push('vite', 'frontend');
+
+              if (deps.react) {
+                topics.push('react');
+                description = 'Vite + React frontend project';
+              } else if (deps.vue) {
+                topics.push('vue');
+                description = 'Vite + Vue frontend project';
+              } else {
+                description = 'Vite frontend project';
+              }
+            }
+            else if (deps.react) {
+              topics.push('react', 'frontend');
+              description = 'React frontend application';
+            }
+            else if (deps.vue) {
+              topics.push('vue', 'frontend');
+              description = 'Vue frontend application';
+            }
+
+            // ===============================
+            // 3. BACKEND DETECTION
+            // ===============================
+            if (deps.express) topics.push('express');
+            if (deps.nestjs) topics.push('nestjs');
+            if (deps.fastify) topics.push('fastify');
+
+            if (deps.express || deps.nestjs || deps.fastify) {
+              topics.push('nodejs', 'backend');
+              description = 'Node.js backend application';
+            }
+
+            // ===============================
+            // 4. LIBRARY / TOOL DETECTION
+            // ===============================
+            if (deps.tailwindcss) topics.push('tailwindcss');
+            if (deps.prisma) topics.push('prisma');
+            if (deps.mongoose) topics.push('mongodb');
+            if (deps.mysql2) topics.push('mysql');
+            if (deps.axios) topics.push('axios');
+
+            // ===============================
+            // 5. LANGUAGE DETECTION (GitHub)
+            // ===============================
             const languages = await github.rest.repos.listLanguages({
               owner,
               repo
             });
 
-            const langs = Object.keys(languages.data);
-            if (langs.length === 0) return;
+            const mainLang = Object.keys(languages.data)[0];
+            if (mainLang) topics.push(mainLang.toLowerCase());
 
-            const mainLang = langs[0];
+            // Remove duplicates
+            topics = [...new Set(topics)];
 
-            const topicsMap = {
-              JavaScript: ['javascript', 'web', 'frontend'],
-              TypeScript: ['typescript', 'web'],
-              Java: ['java', 'backend'],
-              Python: ['python', 'automation']
-            };
-
-            const topics = topicsMap[mainLang] || [mainLang.toLowerCase()];
-            topics.push("featured-project");
+            // ===============================
+            // 6. UPDATE REPO METADATA
+            // ===============================
             await github.rest.repos.update({
               owner,
               repo,
-              description: `This project is mainly written in ${mainLang}`
+              description
             });
 
             await github.rest.repos.replaceAllTopics({
@@ -45,3 +118,6 @@ jobs:
               repo,
               names: topics
             });
+
+            console.log('Updated description:', description);
+            console.log('Updated topics:', topics);
