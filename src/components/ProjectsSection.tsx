@@ -140,9 +140,7 @@ export const ProjectsSection = () => {
       {loading && (
         <div className="max-w-7xl mx-auto flex flex-col items-center justify-center py-20">
           <Loader className="size-12 text-primary animate-spin mb-4" />
-          <p className="text-base-content/70">
-            {t("projects.loading")}
-          </p>
+          <p className="text-base-content/70">{t("projects.loading")}</p>
         </div>
       )}
 
@@ -197,9 +195,7 @@ export const ProjectsSection = () => {
       {/* No Projects State */}
       {!loading && projects.length === 0 && !error && (
         <div className="max-w-7xl mx-auto py-20 text-center">
-          <p className="text-base-content/70 text-lg">
-            {t("projects.empty")}
-          </p>
+          <p className="text-base-content/70 text-lg">{t("projects.empty")}</p>
         </div>
       )}
 

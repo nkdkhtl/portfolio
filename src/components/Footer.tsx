@@ -38,9 +38,7 @@ export function Footer() {
             className="flex flex-col items-center md:items-start"
           >
             <h3 className="text-xl font-bold text-primary mb-2">Nam Khuc</h3>
-            <p className="text-sm text-base-content/70">
-              {t("footer.role")}
-            </p>
+            <p className="text-sm text-base-content/70">{t("footer.role")}</p>
           </motion.div>
 
           {/* Quick Links */}
@@ -126,10 +124,7 @@ export function Footer() {
             &copy; {currentYear} Nam Khuc. {t("footer.rights")}
           </p>
           <div className="flex items-center gap-1">
-            {t("footer.madeWith")}
-            {" "}
-            <Heart size={16} className="text-error" />
-            {" "}
+            {t("footer.madeWith")} <Heart size={16} className="text-error" />{" "}
             {t("footer.by")}
           </div>
         </motion.div>

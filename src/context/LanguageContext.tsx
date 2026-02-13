@@ -9,7 +9,11 @@ import {
 
 type Language = "en" | "vi";
 
-type TranslationValue = string | TranslationValue[] | Record<string, TranslationValue>;
+interface TranslationObject {
+  [key: string]: TranslationValue;
+}
+
+type TranslationValue = string | TranslationValue[] | TranslationObject;
 
 type LanguageContextValue = {
   language: Language;
@@ -21,11 +25,12 @@ const LanguageContext = createContext<LanguageContextValue | undefined>(
   undefined,
 );
 
-const translations: Record<Language, Record<string, TranslationValue>> = {
+const translations: Record<Language, TranslationObject> = {
   en: {
     app: {
       role: "Frontend Web Intern",
-      tagline: "Crafting beautiful digital experiences with code and creativity",
+      tagline:
+        "Crafting beautiful digital experiences with code and creativity",
       availability: "available for work",
       building: "building cool stuff",
     },
@@ -231,8 +236,7 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
   vi: {
     app: {
       role: "Thực tập sinh Frontend",
-      tagline:
-        "Tạo ra trải nghiệm số đẹp bằng code và sự sáng tạo",
+      tagline: "Tạo ra trải nghiệm số đẹp bằng code và sự sáng tạo",
       availability: "sẵn sàng nhận việc",
       building: "đang làm đồ hay",
     },
@@ -437,16 +441,15 @@ const translations: Record<Language, Record<string, TranslationValue>> = {
   },
 };
 
-const getNestedValue = (source: Record<string, TranslationValue>, key: string) =>
+const getNestedValue = (
+  source: Record<string, TranslationValue>,
+  key: string,
+) =>
   key
     .split(".")
-    .reduce<TranslationValue | undefined>(
-      (acc, part) =>
-        acc && typeof acc === "object" && part in acc
-          ? (acc as Record<string, TranslationValue>)[part]
-          : undefined,
-      source,
-    );
+    .reduce<
+      TranslationValue | undefined
+    >((acc, part) => (acc && typeof acc === "object" && part in acc ? (acc as Record<string, TranslationValue>)[part] : undefined), source);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState<Language>("en");
@@ -464,7 +467,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   const t = useMemo(() => {
-    return <T = string>(key: string): T => {
+    return <T = string,>(key: string): T => {
       const value = getNestedValue(translations[language], key);
       return (value ?? key) as T;
     };

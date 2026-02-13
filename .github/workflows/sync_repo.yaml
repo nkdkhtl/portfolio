@@ -134,10 +134,6 @@ jobs:
             // ===============================
             topics = [...new Set(topics)];
 
-            await github.rest.repos.update({
-              owner,
-              repo,
-            });
 
             await github.rest.repos.replaceAllTopics({
               owner,

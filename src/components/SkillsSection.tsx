@@ -88,9 +88,7 @@ export function SkillsSection() {
       <div className="max-w-7xl mx-auto relative">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-8 h-1 bg-accent rounded-full" />
-          <span className="text-accent font-semibold">
-            {t("skills.label")}
-          </span>
+          <span className="text-accent font-semibold">{t("skills.label")}</span>
         </div>
         <h2 className="text-4xl md:text-5xl font-bold text-base-content mb-4">
           {t("skills.title")}

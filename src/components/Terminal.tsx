@@ -66,10 +66,7 @@ export function Terminal() {
         ...prev,
         {
           type: "error",
-          content: t("terminal.commandNotFound").replace(
-            "{command}",
-            command,
-          ),
+          content: t("terminal.commandNotFound").replace("{command}", command),
         },
       ]);
     }
