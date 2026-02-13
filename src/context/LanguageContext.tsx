@@ -28,7 +28,7 @@ const LanguageContext = createContext<LanguageContextValue | undefined>(
 const translations: Record<Language, TranslationObject> = {
   en: {
     app: {
-      role: "Frontend Web Intern",
+      role: "Frontend Intern • Ha Noi • Remote/On-site",
       tagline:
         "Crafting beautiful digital experiences with code and creativity",
       availability: "available for work",
@@ -235,7 +235,7 @@ const translations: Record<Language, TranslationObject> = {
   },
   vi: {
     app: {
-      role: "Thực tập sinh Frontend",
+      role: "Thực tập sinh Frontend • Hà Nội • Remote/On-site",
       tagline: "Tạo ra trải nghiệm số đẹp bằng code và sự sáng tạo",
       availability: "sẵn sàng nhận việc",
       building: "đang làm đồ hay",
@@ -317,7 +317,7 @@ const translations: Record<Language, TranslationObject> = {
     },
     contact: {
       label: "LIÊN HỆ",
-      title: "Cùng tạo nên điều thật sáng",
+      title: "Cùng nhau hợp tác và phát triển nhé!",
       description:
         "Hãy cho mình biết ý tưởng, dự án hợp tác hoặc cơ hội thực tập. Mình thường phản hồi trong 24 giờ.",
       cardTitle: "Bắt đầu trò chuyện",
