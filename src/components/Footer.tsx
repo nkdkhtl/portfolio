@@ -1,7 +1,9 @@
 import { Github, Linkedin, Mail, Heart } from "lucide-react";
 import { motion } from "motion/react";
+import { useLanguage } from "../context/LanguageContext";
 
 export function Footer() {
+  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
   const socialLinks = [
     {
@@ -37,7 +39,7 @@ export function Footer() {
           >
             <h3 className="text-xl font-bold text-primary mb-2">Nam Khuc</h3>
             <p className="text-sm text-base-content/70">
-              Frontend Web Developer & Creative Coder
+              {t("footer.role")}
             </p>
           </motion.div>
 
@@ -49,7 +51,7 @@ export function Footer() {
             className="flex flex-col items-center"
           >
             <h4 className="font-semibold text-base-content mb-4">
-              Quick Links
+              {t("footer.quickLinks")}
             </h4>
             <ul className="space-y-2 text-sm text-base-content/70">
               <li>
@@ -57,7 +59,7 @@ export function Footer() {
                   href="#home"
                   className="hover:text-primary transition-colors"
                 >
-                  Home
+                  {t("footer.home")}
                 </a>
               </li>
               <li>
@@ -65,7 +67,7 @@ export function Footer() {
                   href="#projects"
                   className="hover:text-primary transition-colors"
                 >
-                  Projects
+                  {t("footer.projects")}
                 </a>
               </li>
               <li>
@@ -73,7 +75,7 @@ export function Footer() {
                   href="#contact"
                   className="hover:text-primary transition-colors"
                 >
-                  Contact
+                  {t("footer.contact")}
                 </a>
               </li>
             </ul>
@@ -86,7 +88,9 @@ export function Footer() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="flex flex-col items-center md:items-end"
           >
-            <h4 className="font-semibold text-base-content mb-4">Connect</h4>
+            <h4 className="font-semibold text-base-content mb-4">
+              {t("footer.connect")}
+            </h4>
             <div className="flex gap-4">
               {socialLinks.map((social) => {
                 const Icon = social.icon;
@@ -118,9 +122,15 @@ export function Footer() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-base-content/60"
         >
-          <p>&copy; {currentYear} Nam Khuc. All rights reserved.</p>
+          <p>
+            &copy; {currentYear} Nam Khuc. {t("footer.rights")}
+          </p>
           <div className="flex items-center gap-1">
-            Made with <Heart size={16} className="text-error" /> by Nam Khuc
+            {t("footer.madeWith")}
+            {" "}
+            <Heart size={16} className="text-error" />
+            {" "}
+            {t("footer.by")}
           </div>
         </motion.div>
       </div>

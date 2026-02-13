@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
 import { THEMES } from "../constants/themes";
 import { PaintBucket } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
 
 export function ThemeToggle() {
+  const { t } = useLanguage();
   const [theme, setTheme] = useState<string>("dark");
   const [search, setSearch] = useState<string>("");
 
@@ -31,7 +33,7 @@ export function ThemeToggle() {
       <button
         tabIndex={0}
         className="btn btn-ghost btn-circle"
-        title="Change theme"
+        title={t("themeToggle.change")}
       >
         <PaintBucket className="size-6" />
       </button>
@@ -41,7 +43,7 @@ export function ThemeToggle() {
       >
         <input
           type="text"
-          placeholder="Search themes..."
+          placeholder={t("themeToggle.search")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="input input-bordered input-sm w-full mb-3"

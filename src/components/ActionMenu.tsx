@@ -2,6 +2,8 @@ import { Music, Settings, Sparkles } from "lucide-react";
 import { motion } from "motion/react";
 import { ThemeToggle } from "./ThemeToggle";
 import { useState, useRef, useEffect } from "react";
+import { LanguageToggle } from "./LanguageToggle";
+import { useLanguage } from "../context/LanguageContext";
 
 interface ActionMenuProps {
   onMusicClick: () => void;
@@ -16,6 +18,7 @@ export function ActionMenu({
   isMusicActive = false,
   isSparklesActive = false,
 }: ActionMenuProps) {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -36,14 +39,14 @@ export function ActionMenu({
   const buttons = [
     {
       icon: Music,
-      label: "Music",
+      label: t("actionMenu.music"),
       onClick: onMusicClick,
       color: "text-pink-500",
       isActive: isMusicActive,
     },
     {
       icon: Sparkles,
-      label: "Effects",
+      label: t("actionMenu.effects"),
       onClick: onSparklesClick,
       color: "text-purple-500",
       isActive: isSparklesActive,
@@ -100,11 +103,12 @@ export function ActionMenu({
         onClick={() => setIsOpen(!isOpen)}
         animate={{ rotate: isOpen ? 45 : 0 }}
         className="btn btn-circle btn-sm btn-ghost"
-        title="Menu"
+        title={t("actionMenu.menu")}
       >
         <Settings className="w-5 h-5 flex items-center justify-center" />
       </motion.button>
 
+      <LanguageToggle />
       <ThemeToggle />
     </div>
   );

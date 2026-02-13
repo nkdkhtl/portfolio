@@ -1,17 +1,19 @@
 import { Menu, X } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { useLanguage } from "../context/LanguageContext";
 
 export function NavMenu() {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("about");
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
   const navRef = useRef<HTMLDivElement>(null);
 
   const navItems = [
-    { label: "About", href: "#about" },
-    { label: "Projects", href: "#projects" },
-    { label: "Skills", href: "#skills" },
-    { label: "Contact", href: "#contact" },
+    { label: t("nav.about"), href: "#about" },
+    { label: t("nav.projects"), href: "#projects" },
+    { label: t("nav.skills"), href: "#skills" },
+    { label: t("nav.contact"), href: "#contact" },
   ];
 
   useEffect(() => {

@@ -11,8 +11,12 @@ import { MusicPlayer } from "./components/MusicPlayer";
 import { NavMenu } from "./components/NavMenu";
 import { Footer } from "./components/Footer";
 import { ProjectsSection } from "./components/ProjectsSection";
+import { SkillsSection } from "./components/SkillsSection";
+import { ContactSection } from "./components/ContactSection";
+import { useLanguage } from "./context/LanguageContext";
 
 function App() {
+  const { t } = useLanguage();
   const [theme, setTheme] = useState("dark");
   const [effectType, setEffectType] = useState<"rain" | "snow" | null>(null);
   const [showMusic, setShowMusic] = useState(false);
@@ -83,23 +87,23 @@ function App() {
               ~namkhuc~
             </p>
             <TypingText
-              text="Frontend Web Intern"
+              text={t("app.role")}
               delay={800}
               className="text-center text-xl md:text-2xl mb-2 block text-accent"
             />
           </div>
           <p className="text-base md:text-lg max-w-2xl mx-auto text-center text-base-content/80">
-            Crafting beautiful digital experiences with code and creativity
+            {t("app.tagline")}
           </p>
           <div className="flex items-center justify-center gap-6 text-sm my-3">
             <span className="flex items-center gap-2">
               <span className="size-2 rounded-full bg-success animate-pulse"></span>
-              available for work
+              {t("app.availability")}
             </span>
             <span>•</span>
             <span className="flex items-center gap-1">
               <Rocket className="size-3" />
-              building cool stuff
+              {t("app.building")}
             </span>
           </div>
           {/* Quick Links */}
@@ -116,8 +120,12 @@ function App() {
       <div id="projects" className="w-full bg-base-100">
         <ProjectsSection />
       </div>
-      <div id="skills" className="flex flex-wrap min-h-screen w-full"></div>
-      <div id="contact" className="flex flex-wrap min-h-screen w-full"></div>
+      <div id="skills" className="w-full">
+        <SkillsSection />
+      </div>
+      <div id="contact" className="w-full">
+        <ContactSection />
+      </div>
 
       <Footer />
       <Analytics />

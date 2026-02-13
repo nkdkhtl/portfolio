@@ -1,18 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
+import { useLanguage } from "../context/LanguageContext";
 
 interface TerminalLine {
   type: "input" | "output" | "error";
   content: string;
 }
 export function Terminal() {
+  const { t, language } = useLanguage();
+  const buildOutputLines = (contents: string[]) =>
+    contents.map((content) => ({ type: "output" as const, content }));
   const [lines, setLines] = useState<TerminalLine[]>([
-    { type: "output", content: "Welcome to nk's terminal" },
-    {
-      type: "output",
-      content: 'Type "help" to explore or "about" to learn more about me',
-    },
-    { type: "output", content: "" },
+    ...buildOutputLines(t<string[]>("terminal.initialLines")),
   ]);
 
   const [currInp, setCurrInp] = useState("");
@@ -22,92 +21,13 @@ export function Terminal() {
   const terminalRef = useRef<HTMLDivElement>(null);
 
   const commands: Record<string, () => string | string[]> = {
-    help: () => [
-      "Available commands:",
-      "  help       - Show this help message",
-      "  about      - Learn about me",
-      "  skills     - View my skills",
-      "  projects   - See my recent projects",
-      "  contact    - Get my contact info",
-      "  socials    - View my social links",
-      "  resume     - Download my resume",
-      "  clear      - Clear the terminal",
-      "  date       - Show current date and time",
-    ],
-    about: () => [
-      "Hi, I'm Khuc Phuong Nam (Nam Khuc)",
-      "",
-      "3rd-year IT Student at ",
-      "the University of Transport and Communications.",
-      "",
-      "Vice Head of the Web Division at SFIT Computer Club.",
-      "",
-      "Passionate about modern web technologies, ",
-      "design systems, and user-centered development.",
-      "",
-      "Based in Dong Anh, Ha Noi",
-      "Open to Internship opportunities!",
-    ],
-    skills: () => [
-      "🛠️ Technical Skills:",
-      "",
-      "  Frontend:",
-      "    → React, TypeScript, Next.js",
-      "    → Tailwind CSS, Motion, Boostraps",
-      "    → HTML5, CSS3, JavaScript",
-
-      "",
-      "  Backend:",
-      "    → Node.js, Express, Golang",
-      "    → Python, Django",
-      "    → REST APIs, WebSocket",
-      "",
-      "  Tools & More:",
-      "    → Git, GitHub, VS Code",
-      "    → Cursor, Vibe Coding,...",
-      "    → Docker, CI/CD",
-    ],
-    projects: () => [
-      "🚀 Recent Projects:",
-      "",
-      "  1. E-commerce Platform",
-      "     Next.js + Stripe integration",
-      "     → github.com/yourusername/ecommerce",
-      "",
-      "  2. Task Management App",
-      "     React + Firebase real-time sync",
-      "     → github.com/yourusername/taskapp",
-      "",
-      "  3. Portfolio Website",
-      "     Custom design with animations",
-      "     → github.com/yourusername/portfolio",
-      "",
-      "View all projects: github.com/yourusername",
-    ],
-    contact: () => [
-      "📬 Get in touch:",
-      "",
-      "  Email: khucphuongnam2005@gmail.com",
-      "  Location: Dong Anh, Ha Noi, Viet Nam",
-      "",
-      "Feel free to reach out for collaborations!",
-    ],
-    socials: () => [
-      "🌐 Find me online:",
-      "",
-      "  GitHub:   github.com/nkdkhtl",
-      "  LinkedIn: linkedin.com/in/namkhuc",
-      "  Instagram: instagram.com/nam.khuc242",
-      "  Facebook: facebook.com/nkdkhtl",
-      "  Portfolio: namkhuc.me",
-    ],
-    resume: () => [
-      "📄 Resume:",
-      "",
-      "Download: namkhuc.me/resume.pdf",
-      "",
-      "(In a real implementation, this would trigger a download)",
-    ],
+    help: () => t<string[]>("terminal.help"),
+    about: () => t<string[]>("terminal.about"),
+    skills: () => t<string[]>("terminal.skills"),
+    projects: () => t<string[]>("terminal.projects"),
+    contact: () => t<string[]>("terminal.contact"),
+    socials: () => t<string[]>("terminal.socials"),
+    resume: () => t<string[]>("terminal.resume"),
     clear: () => {
       setLines([]);
       return "";
@@ -146,7 +66,10 @@ export function Terminal() {
         ...prev,
         {
           type: "error",
-          content: `Command not found: ${command}. Type "help" for available commands`,
+          content: t("terminal.commandNotFound").replace(
+            "{command}",
+            command,
+          ),
         },
       ]);
     }
@@ -189,6 +112,10 @@ export function Terminal() {
       terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
     }
   }, [lines]);
+
+  useEffect(() => {
+    setLines(buildOutputLines(t<string[]>("terminal.initialLines")));
+  }, [language, t]);
   return (
     <div
       className="bg-base-200 backdrop-blur-sm rounded-2xl border border-base-300 p-6 shadow-2xl h-125 flex flex-col font-mono"
@@ -235,7 +162,7 @@ export function Terminal() {
           onChange={(e) => setCurrInp(e.target.value)}
           onKeyDown={handleKeyDown}
           className="flex-1 bg-transparent outline-none text-base-content placeholder-base-content/30 caret-primary"
-          placeholder="type a command..."
+          placeholder={t("terminal.placeholder")}
         />
       </div>
     </div>

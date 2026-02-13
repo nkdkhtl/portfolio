@@ -1,6 +1,7 @@
 import { Github, ExternalLink, Star, Loader } from "lucide-react";
 import { useState, useEffect } from "react";
 import { fetchGitHubProjects, type Project } from "../services";
+import { useLanguage } from "../context/LanguageContext";
 
 const ProjectCard = ({ project }: { project: Project }) => (
   <div className="group relative h-80 rounded-xl overflow-hidden cursor-pointer">
@@ -83,6 +84,7 @@ const ProjectCard = ({ project }: { project: Project }) => (
 );
 
 export const ProjectsSection = () => {
+  const { t } = useLanguage();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -122,14 +124,15 @@ export const ProjectsSection = () => {
       <div className="max-w-7xl mx-auto mb-16">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-8 h-1 bg-primary rounded-full"></div>
-          <span className="text-primary font-semibold">FEATURED WORKS</span>
+          <span className="text-primary font-semibold">
+            {t("projects.featuredLabel")}
+          </span>
         </div>
         <h2 className="text-4xl md:text-5xl font-bold text-base-content mb-4">
-          Projects & Creations
+          {t("projects.title")}
         </h2>
         <p className="text-lg text-base-content/70 max-w-2xl">
-          A collection of projects I've built to solve real problems and explore
-          new technologies. Each one is a learning journey.
+          {t("projects.description")}
         </p>
       </div>
 
@@ -138,7 +141,7 @@ export const ProjectsSection = () => {
         <div className="max-w-7xl mx-auto flex flex-col items-center justify-center py-20">
           <Loader className="size-12 text-primary animate-spin mb-4" />
           <p className="text-base-content/70">
-            Loading projects from GitHub...
+            {t("projects.loading")}
           </p>
         </div>
       )}
@@ -147,8 +150,7 @@ export const ProjectsSection = () => {
       {error && !loading && (
         <div className="max-w-7xl mx-auto mb-16 p-4 rounded-lg bg-error/10 border border-error/30">
           <p className="text-error">
-            Could not load projects: {error}. Please check your GitHub username
-            in the component settings.
+            {t("projects.error").replace("{error}", error)}
           </p>
         </div>
       )}
@@ -162,7 +164,7 @@ export const ProjectsSection = () => {
               <div className="flex items-center gap-3 mb-8">
                 <div className="w-6 h-1 bg-accent rounded-full"></div>
                 <h3 className="text-2xl font-bold text-base-content">
-                  Featured Projects
+                  {t("projects.featuredTitle")}
                 </h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -179,7 +181,7 @@ export const ProjectsSection = () => {
               <div className="flex items-center gap-3 mb-8">
                 <div className="w-6 h-1 bg-base-300 rounded-full"></div>
                 <h3 className="text-2xl font-bold text-base-content">
-                  Other Projects
+                  {t("projects.otherTitle")}
                 </h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -196,7 +198,7 @@ export const ProjectsSection = () => {
       {!loading && projects.length === 0 && !error && (
         <div className="max-w-7xl mx-auto py-20 text-center">
           <p className="text-base-content/70 text-lg">
-            No projects found. Please check your GitHub username.
+            {t("projects.empty")}
           </p>
         </div>
       )}
@@ -209,7 +211,7 @@ export const ProjectsSection = () => {
           rel="noopener noreferrer"
           className="inline-block px-8 py-3 rounded-lg bg-gradient-to-r from-primary to-accent text-white font-semibold hover:shadow-lg hover:shadow-primary/50 transition-all duration-300 transform hover:scale-105"
         >
-          View All Projects on GitHub
+          {t("projects.viewAll")}
         </a>
       </div>
     </div>

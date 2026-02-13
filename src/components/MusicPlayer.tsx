@@ -1,12 +1,14 @@
 import { Music, Pause, Play, Volume2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { useLanguage } from "../context/LanguageContext";
 interface MusicPlayerProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
 export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
+  const { t } = useLanguage();
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(30);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -78,7 +80,7 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Music className="size-5" />
-                <h3 className="font-semibold">NK's Radio</h3>
+                <h3 className="font-semibold">{t("music.title")}</h3>
               </div>
               <button
                 onClick={onClose}
@@ -96,7 +98,9 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
                 >
                   <div className="text-sm font-medium">{track.title}</div>
                   {isPlaying && (
-                    <div className="text-xs opacity-75">Now playing...</div>
+                    <div className="text-xs opacity-75">
+                      {t("music.nowPlaying")}
+                    </div>
                   )}
                 </div>
               ))}
@@ -108,11 +112,11 @@ export function MusicPlayer({ isOpen, onClose }: MusicPlayerProps) {
             >
               {isPlaying ? (
                 <>
-                  <Pause className="size-4" /> Pause
+                  <Pause className="size-4" /> {t("music.pause")}
                 </>
               ) : (
                 <>
-                  <Play className="size-4" /> Play
+                  <Play className="size-4" /> {t("music.play")}
                 </>
               )}
             </button>

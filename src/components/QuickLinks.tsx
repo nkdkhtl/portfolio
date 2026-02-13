@@ -1,6 +1,8 @@
 import { Facebook, FileText, Github, Instagram, Linkedin } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
 
 export function QuickLinks() {
+  const { t } = useLanguage();
   const links = [
     {
       icon: Github,
@@ -28,7 +30,7 @@ export function QuickLinks() {
     },
     {
       icon: FileText,
-      label: "Resume",
+      label: t("quickLinks.resume"),
       href: "/resume.pdf",
       color: "hover:text-[#b4c4d4]",
     },
