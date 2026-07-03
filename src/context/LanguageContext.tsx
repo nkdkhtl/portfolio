@@ -28,7 +28,7 @@ const LanguageContext = createContext<LanguageContextValue | undefined>(
 const translations: Record<Language, TranslationObject> = {
     en: {
         app: {
-            role: "Frontend Intern • Ha Noi • Remote/On-site",
+            role: "Fullstack Intern • Ha Noi • Remote/On-site",
             tagline:
                 "Crafting beautiful digital experiences with code and creativity",
             availability: "available for work",
