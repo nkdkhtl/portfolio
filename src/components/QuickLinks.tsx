@@ -31,9 +31,9 @@ export function QuickLinks() {
         {
             icon: FileText,
             label: t("quickLinks.resume"),
-            href: "/Fullstack_KhucPhuongNam.pdf",
+            href: "/fullstack_kpnam.pdf",
             color: "hover:text-[#b4c4d4]",
-            download: "Fullstack_KhucPhuongNam.pdf",
+            download: "fullstack_kpnam.pdf",
         },
     ];
     return (
